@@ -1,4 +1,4 @@
-// lib/pending.ts — "En tus páginas" heading scanner and the Mapa card
+// lib/pending.ts — "En tus páginas" heading scanner
 // (spec §6.3).
 //
 // The scanner takes pages whose headings say pendiente / próximos pasos /
@@ -6,12 +6,8 @@
 // under each matching heading (up to the next heading of the same or higher
 // level), at most 10 per heading. Read-only.
 //
-// Mapa: the "Mapa de misiones" now lives in the Misiones tab (a local copy of
-// the claude.ai artifact, lib/artdb.ts); the Pendientes card links there. If a
-// Claude session ever writes ~/.gbrain-panel/mapa-snapshot.json, it is shown read-only.
 
 import { readFileSync } from "node:fs";
-import { config, paths } from "./config.ts";
 
 const HEADING_RE = /^(#{1,6}) (.*)$/;
 const KEYWORDS = /(pendiente|próximos pasos|proximos pasos|next steps|preguntas abiertas|open questions)/i;
@@ -57,25 +53,4 @@ export function scanPendingHeadings(pages: { slug: string; title: string; compil
     }
   }
   return out;
-}
-
-export interface MapaCard {
-  mode: "link" | "snapshot";
-  url: string;
-  snapshotAt?: string;
-  open?: { title: string; day: string; frente: string }[];
-}
-
-export function getMapaCard(): MapaCard {
-  try {
-    const snap = JSON.parse(readFileSync(paths.mapaSnapshot, "utf8"));
-    if (snap && Array.isArray(snap.missions)) {
-      const open = snap.missions
-        .filter((m: any) => m && !m.done)
-        .map((m: any) => ({ title: String(m.title ?? ""), day: String(m.day ?? ""), frente: String(m.frente ?? "") }))
-        .slice(0, 200);
-      return { mode: "snapshot", url: String(snap.url || config.mapaUrl), snapshotAt: String(snap.exportedAt ?? ""), open };
-    }
-  } catch { /* no snapshot: link only (decision B) */ }
-  return { mode: "link", url: config.mapaUrl };
 }

@@ -5,7 +5,7 @@
   "coldDays": 42,
   "estadoFile": "__REPO__/brain/sources/informes-claude/ESTADO.md",
   "chat": {
-    "defaultModel": "opus",
+    "defaultModel": "sonnet",
     "allowOpus": true,
     "convBudgetUsd": 2,
     "dailyBudgetUsd": 5,
@@ -22,7 +22,6 @@
     "backup": "__HOME__/Backups/gbrain/backup.log",
     "daily": "__HOME__/Backups/gbrain/daily.log"
   },
-  "mapaUrl": "",
   "pricesNote": "USD por millón de tokens, solo para la estimación. Comprobado con la skill claude-api (tabla cacheada 2026-10-06): Opus 5.5 $4/$20, lectura de caché $0.20; Sonnet 5.5 $2/$10, lectura de caché $0.20; Haiku 5.5 $0.10/$0.50. Escritura de caché: 1.25x (5 min) y 2x (1 h) del precio de entrada.",
   "prices": {
     "opus": { "in": 4, "out": 20, "cw5m": 5, "cw1h": 8, "cr": 0.2 },

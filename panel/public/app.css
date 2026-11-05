@@ -1165,7 +1165,7 @@ dialog.palette:not([open]) { display: none; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
 
-/* ----------------------------------------------------------- misiones */
+/* ----------------------------------------------------------- diario */
 .mis-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }
 .mis-seg { flex-wrap: wrap; }
 .mis-seg a.seg-btn { display: inline-flex; align-items: center; text-decoration: none; }

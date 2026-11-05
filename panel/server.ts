@@ -8,7 +8,6 @@
 // Logs carry method, path (never the query string), status and milliseconds.
 
 import { readFileSync, realpathSync } from "node:fs";
-import { createHash } from "node:crypto";
 import { join, normalize } from "node:path";
 
 import { config, ensureStateDir, localDay, paths, PANEL_DIR, readState, writeState } from "./lib/config.ts";
@@ -18,7 +17,7 @@ import { renderMarkdown } from "./lib/render.ts";
 import { computePulse, indexFingerprint } from "./lib/pulse.ts";
 import { getHealth, getEstadoPage, runDoctor } from "./lib/health.ts";
 import { daysUntil, getEstado, urgencyFor, type Deadline } from "./lib/estado.ts";
-import { getMapaCard, scanPendingHeadings } from "./lib/pending.ts";
+import { scanPendingHeadings } from "./lib/pending.ts";
 import { callTool, GbrainError } from "./lib/gbrain.ts";
 import {
   buildAdd, buildDefer, buildDone, buildEdit, buildMove, buildReopen, getTasksDoc, initTasksPage, mutateTasks,
@@ -28,9 +27,7 @@ import { getMensajes, getTelegramSummary, telegramFingerprint } from "./lib/tele
 import { chatStream, getChat, listChats, panelSpendToday, startChat, stopChat } from "./lib/chat.ts";
 import { CorreoError, saveDraft, sendEmail } from "./lib/correo.ts";
 import { AjustesError, billingStatus, setAjustes } from "./lib/ajustes.ts";
-import * as artdb from "./lib/artdb.ts";
-import { appendEntry, appendQuiet, cleanLine, DiarioError, listEntries, NO_PERMISSION_ES } from "./lib/diario.ts";
-import { runSample, SampleError } from "./lib/sample.ts";
+import { appendEntry, DiarioError, listEntries, NO_PERMISSION_ES } from "./lib/diario.ts";
 import { buildEstrategiaView, ESTRATEGIA_SLUG } from "./lib/estrategia.ts";
 import * as asistente from "./lib/asistente.ts";
 
@@ -90,7 +87,7 @@ function jsonError(status: number, code: string, message_es: string): Response {
 
 function errorResponse(e: unknown): Response {
   if (e instanceof HttpError || e instanceof TaskError || e instanceof GbrainError || e instanceof CorreoError ||
-      e instanceof artdb.ArtdbError || e instanceof DiarioError || e instanceof SampleError || e instanceof AjustesError || e instanceof asistente.AsistenteError) {
+      e instanceof DiarioError || e instanceof AjustesError || e instanceof asistente.AsistenteError) {
     return jsonError(e.status, e.code, e.message_es);
   }
   console.error(`[cerebro] error interno: ${String((e as any)?.message ?? e).slice(0, 300)}`);
@@ -98,14 +95,11 @@ function errorResponse(e: unknown): Response {
 }
 
 function withHeaders(res: Response, pathname: string): Response {
-  // The artifact pages (Misiones) bring their own CSP from serveArtifact and may
-  // be framed by the panel itself (same origin), never by anyone else.
-  const artifact = pathname.startsWith("/artifacts/") && res.headers.has("Content-Security-Policy");
   const set = (h: Headers) => {
-    if (!artifact) h.set("Content-Security-Policy", CSP);
+    h.set("Content-Security-Policy", CSP);
     h.set("X-Content-Type-Options", "nosniff");
     h.set("Referrer-Policy", "no-referrer");
-    h.set("X-Frame-Options", artifact ? "SAMEORIGIN" : "DENY");
+    h.set("X-Frame-Options", "DENY");
     if (pathname.startsWith("/api/")) h.set("Cache-Control", "no-store");
   };
   try {
@@ -245,7 +239,6 @@ async function viewPendientes() {
     commitments: commits,
     deadlines: estado.rows,
     sections: scanPendingHeadings(pagesWithHeadings),
-    mapa: getMapaCard(),
     estado: estadoMeta(estado),
   };
 }
@@ -440,66 +433,7 @@ async function serveStatic(pathname: string): Promise<Response> {
 }
 
 // ---------------------------------------------------------------------------
-// Misiones: the claude.ai artifacts served locally, their store, the diary
-
-const ARTIFACT_PAGES = new Set(["/artifacts/cola.html", "/artifacts/mapa.html"]);
-const SHIM_TAG = '<script src="/artifacts/claude-shim.js"></script>';
-
-/**
- * Serves an artifact page unchanged except for one injected <script src> (the
- * window.claude shim). Its inline <script> is allowed by hash, not by
- * 'unsafe-inline'; inline styles and Google Fonts are allowed because the pages
- * use them; it can only be framed by the panel (frame-ancestors 'self').
- */
-function serveArtifact(pathname: string): Response {
-  let html: string;
-  try { html = readFileSync(join(PUBLIC_DIR, pathname), "utf8"); } catch { return new Response("Not found", { status: 404 }); }
-  html = html.replace(/<head>/i, "<head>" + SHIM_TAG);
-  const hashes: string[] = [];
-  for (const m of html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)) {
-    hashes.push(`'sha256-${createHash("sha256").update(m[1], "utf8").digest("base64")}'`);
-  }
-  const csp = [
-    "default-src 'self'", `script-src 'self' ${hashes.join(" ")}`,
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", "font-src https://fonts.gstatic.com",
-    "img-src 'self' data:", "connect-src 'self'", "frame-ancestors 'self'", "base-uri 'none'", "form-action 'self'",
-  ].join("; ");
-  return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-cache", "Content-Security-Policy": csp } });
-}
-
-const isCorreo = (it: any) => it?.tipo === "correo" || it?.tipo === "falta";
-
-/** Diary hook: a Cola draft or a Mapa mission that just became done gets one line in today's diary. */
-function diaryOnDone(page: string, collection: string, r: artdb.WriteResult) {
-  if (!r.after) return;
-  if (page === "cola" && collection === "items" && r.after.estado === "hecho" && r.before?.estado !== "hecho") {
-    appendQuiet(`${isCorreo(r.after) ? "Enviado" : "Hecho"} (cola de borradores): ${cleanLine(r.after.titulo) || r.id}`);
-  }
-  if (page === "mapa" && collection === "missions" && r.after.done === true && r.before?.done !== true) {
-    appendQuiet(`Misión hecha (mapa de misiones): ${cleanLine(r.after.title) || r.id}`);
-  }
-}
-
-async function artdbRoute(req: Request, url: URL, m: string, rest: string, body: () => Promise<Record<string, any>>): Promise<Response> {
-  const [page, action] = rest.split("/");
-  artdb.checkPage(page ?? "");
-  if (m === "GET" && !action) {
-    const since = url.searchParams.get("since");
-    const n = since != null && /^\d{1,15}$/.test(since) ? Number(since) : undefined;
-    return json(artdb.snapshot(page, n));
-  }
-  if (m === "POST" && action === "write") {
-    const b = await body();
-    const r = artdb.write(page, b.op, b.collection, b.id, b.data);
-    diaryOnDone(page, String(b.collection), r);
-    return json({ ok: true, rev: r.rev, id: r.id });
-  }
-  if (m === "POST" && action === "sample" && page === "cola") {
-    const b = await body();
-    return json(await runSample(b.prompt, req.signal));
-  }
-  return jsonError(404, "not_found", "Ruta desconocida");
-}
+// Diario
 
 async function viewDiario() {
   const known = await db.getKnownSlugs().catch(() => new Set<string>());
@@ -520,7 +454,6 @@ async function route(req: Request, url: URL, server: Server): Promise<Response> 
   const m = req.method === "HEAD" ? "GET" : req.method;
   if (!p.startsWith("/api/")) {
     if (m !== "GET") return jsonError(405, "method", "Método no permitido");
-    if (ARTIFACT_PAGES.has(p)) return serveArtifact(p);
     return serveStatic(p);
   }
 
@@ -529,8 +462,6 @@ async function route(req: Request, url: URL, server: Server): Promise<Response> 
     if (!r.ok) throw Object.assign(new HttpError(r.res.status, "body", "Cuerpo no válido"), { res: r.res });
     return obj(r.body);
   };
-
-  if (p.startsWith("/api/artdb/")) return artdbRoute(req, url, m, p.slice("/api/artdb/".length), body);
 
   if (m === "GET") {
     switch (p) {

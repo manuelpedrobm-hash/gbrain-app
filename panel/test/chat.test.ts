@@ -6,13 +6,14 @@ import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { __testing as ajustesTesting } from "../lib/ajustes.ts";
 import {
   __testing, ALLOW, chatStream, DENY, getChat, listChats, panelSpendToday, perTurnCost, PROPOSE, settleTurnCost, splitDenials,
   startChat, stopChat, toolLabel,
 } from "../lib/chat.ts";
 
 const STATE = mkdtempSync(join(tmpdir(), "chat-test-"));
-beforeAll(() => __testing.setStateDir(STATE));
+beforeAll(() => { __testing.setStateDir(STATE); ajustesTesting.setFiles(STATE); });   // ajustes de la carpeta temporal, no los reales
 afterAll(() => rmSync(STATE, { recursive: true, force: true }));
 
 const line = (o: object) => JSON.stringify(o);

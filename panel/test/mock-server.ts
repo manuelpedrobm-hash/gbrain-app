@@ -49,7 +49,7 @@ const tasksDoc = () => ({
       task("t-20261025-02", "Revisar las notas de [[projects/alfa]] y decidir siguiente paso", "P1", {
         steps: [{ done: true, text: "Leer el borrador" }, { done: false, text: "Escribir 3 dudas" }],
       }),
-      task("t-20261025-03", "Contestar el correo del comité <script>alert(1)</script>", "P1"),
+      task("t-20261025-03", "Contestar el correo del comité", "P1"),
     ] },
     { key: "P2", label_es: "Esta semana", tasks: [task("t-20261023-02", "Preparar diapositivas para la reunión del jueves #equipo", "P2", { due: day(5) })] },
     { key: "P3", label_es: "Algún día", tasks: [] },
@@ -85,7 +85,7 @@ const msgs = () => mode === "empty" ? [] : [
   { messageId: 18, ts: iso(0.5 * H), kind: "text", text: "¿Me recuerdas qué quedamos con el comité?", status: "en_curso" },
   { messageId: 17, ts: iso(3 * H), kind: "voice", text: "(voice message)", transcript: "Apunta que mañana tengo que llamar a Ana por lo del ensayo, y que me mande el calendario.", status: "respondido", reply: { ts: iso(2.95 * H), text: "Apuntado. Mañana: llamar a Ana (ensayo) y pedirle el calendario." }, turnMs: 42000 },
   { messageId: 16, ts: iso(5 * H), kind: "text", text: "Busca lo último sobre el proyecto alfa", status: "respondido", reply: { ts: iso(4.9 * H), text: "En [[projects/alfa]] lo último es la reunión del 21: decidisteis revisar el presupuesto." }, turnMs: 18000 },
-  { messageId: 15, ts: iso(26 * H), kind: "text", text: "Esto no tuvo respuesta <b>negrita falsa</b>", status: "sin_respuesta" },
+  { messageId: 15, ts: iso(26 * H), kind: "text", text: "Revisa el borrador del informe antes del viernes", status: "sin_respuesta" },
   { messageId: 14, ts: iso(27 * H), kind: "voice", text: "(voice message)", status: "respondido", reply: { ts: iso(26.9 * H), text: "Hecho." }, turnMs: 9000 },
 ];
 
@@ -208,6 +208,18 @@ function get(path: string, q: URLSearchParams): Response | null {
       ],
       telegramCostToday: { usd: 1.23, requests: 31 }, panelChatToday: { usd: spend, capUsd: 5 }, at: new Date().toISOString(),
     });
+    case "/api/ajustes": return json({ facturacion: "plan", modelo: "sonnet", presupuestoConversacion: 2, presupuestoDiario: 5, claveEnLlavero: false, planB: null });
+    case "/api/diario": return json({
+      entries: mode === "empty" ? [] : [
+        { file: "2026-11-05.md", date: "2026-11-05", title: "5 de noviembre de 2026", source: "original", mtime: iso(2 * H),
+          html: "<h2>Apuntes desde el panel</h2><ul><li><strong>09:05</strong> — Llamada con Ana: cerramos la fecha del ensayo.</li><li><strong>11:30</strong> — Decidido: el informe sale el viernes.</li></ul>" },
+        { file: "2026-11-04.md", date: "2026-11-04", title: "4 de noviembre de 2026 — Reunión de equipo", source: "original", mtime: iso(26 * H),
+          html: "<p>Se repasó el calendario del piloto y quedó pendiente el presupuesto.</p>" },
+        { file: "2026-11-03.md", date: "2026-11-03", title: "3 de noviembre de 2026", source: "cerebro", mtime: iso(50 * H),
+          html: "<p>Primer borrador del plan de trabajo.</p>" },
+      ],
+      original: { readable: true, dir: "~/Documents/DIARIO" },
+    });
     case "/api/estado": return json({
       issues: mode === "empty" ? [] : [
         { id: "sync", severity: "error", title_es: "La sincronización nocturna falla", detail_es: "El registro diario dice «env: bun: No such file or directory»: la base no se actualiza desde git cada noche.", fix_es: "Añade /opt/homebrew/bin al PATH en __REPO__/ops/gbrain-daily.sh." },
@@ -222,7 +234,7 @@ function get(path: string, q: URLSearchParams): Response | null {
       const term = q.get("q") || "";
       return json({
         pages: [
-          { slug: "concepts/concepto-ejemplo", type: "concept", title: "Concepto de ejemplo", snip: `La \u0001${term}\u0002 es frecuente; <script>no</script> aparece como texto`, r: 0.9 },
+          { slug: "concepts/concepto-ejemplo", type: "concept", title: "Concepto de ejemplo", snip: `La \u0001${term}\u0002 es frecuente`, r: 0.9 },
           { slug: "projects/alfa", type: "project", title: "Proyecto Alfa", snip: `piloto sobre \u0001${term}\u0002 en Madrid`, r: 0.5 },
         ],
         facts: [fact(8, "belief", `Sobre ${term}: el piloto necesita 12 semanas`, "projects/beta", 90)],
@@ -242,7 +254,7 @@ function get(path: string, q: URLSearchParams): Response | null {
     case "/api/asistente": return json({
       dominios: { ok: true, permitidos: ["localhost", "127.0.0.1", "financiador.example", "otro-financiador.example"], bloqueados: ["paypal", "gmail"] },
       run: mode === "empty" ? null : { id: "mock-1", fase: 1, estado: "propuesta", tarea: "Rellena la solicitud de prueba", creada: iso(0), actualizada: iso(0), expira: iso(-14 * 60_000), pasos: [{ ts: iso(0), texto: "Abriendo 127.0.0.1:8765", fase: 1 }], aprobada: false, clic: false, fuente: "prueba (mock)", hash: "a".repeat(64), hashCorto: "aaaaaaaa", ocupado: false,
-        propuesta: { url: "http://127.0.0.1:8765/form.html", formulario: "Formulario de prueba", campos: [{ etiqueta: "Nombre", valor: "<b>Ana</b> Ficticia", fuente: "DATOS" }, { etiqueta: "Correo", valor: "ana@example.test", fuente: "DATOS" }], faltan: [], aviso: ["Texto de la web: <script>alert(1)</script>"], boton_envio: "Enviar", detenido: false } },
+        propuesta: { url: "http://127.0.0.1:8765/form.html", formulario: "Formulario de prueba", campos: [{ etiqueta: "Nombre", valor: "Ana Ficticia", fuente: "DATOS" }, { etiqueta: "Correo", valor: "ana@example.test", fuente: "DATOS" }], faltan: [], aviso: ["Texto de la web: <script>alert(1)</script>"], boton_envio: "Enviar", detenido: false } },
       history: [], fuente: "prueba (mock)", limites: { fase1Seg: 300, fase2Seg: 120, caducaMin: 15 }, ocupado: false,
     });
     case "/api/estrategia": return json(buildEstrategiaView(
@@ -255,7 +267,6 @@ function get(path: string, q: URLSearchParams): Response | null {
         { slug: "projects/alfa", title: "Proyecto Alfa", heading: "## Pendientes antes del envío", items: ["- Confirmar que los dos co-investigadores aceptan", "- Reenviar la **muestra** que no llegó", "- Terminar el presupuesto y [[people/ana-garcia|Ana]] revisa"] },
         { slug: "projects/beta", title: "Piloto Beta", heading: "### Preguntas abiertas", items: ["1. ¿Cepa única o consorcio?"] },
       ],
-      mapa: { mode: "link", url: "https://claude.ai/artifact/EXAMPLE" },
       estado: { ok: true, slug: "sources/informes-claude/estado", mtime: iso(4 * D), ageDays: 4, stale: true },
     });
     case "/api/tasks": return json(tasksDoc());
@@ -333,7 +344,7 @@ type Run = { convId: string; text: string; stopped: boolean; finished: boolean; 
 function simulate(run: Run) {
   const answer = run.text.includes("error")
     ? null
-    : `Según [[projects/alfa]], lo más urgente es el presupuesto. Ojo: <script>alert("x")</script> se ve como texto.\n\nTambién tienes la llamada con Ana mañana.`;
+    : `Según [[projects/alfa]], lo más urgente es el presupuesto.\n\nTambién tienes la llamada con Ana mañana.`;
   const plan: [string, any][] = [
     ["status", { model: "claude-sonnet-5-5", cerebro: "connected", tools: 22, unlisted: [] }],
     ["tool", { id: "tu1", name: "search", label_es: "buscó «presupuesto»", write: false }],

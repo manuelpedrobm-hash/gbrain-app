@@ -1,7 +1,6 @@
 // Pendientes: una sola lista con todo lo que está abierto.
 //   Tareas (escribible: la página ops/tasks del cerebro) · Compromisos (hechos) ·
 //   Fechas (ESTADO.md y demás, solo lectura) · En tus páginas (encabezados de pendientes) ·
-//   Mapa de misiones (enlace a la pestaña Misiones).
 
 import {
   h, get, post, card, pageHead, emptyState, icon, inlineText, plainMd, fmtDay, relDay, rel,
@@ -276,13 +275,12 @@ function draw(el) {
     }, 'Encargar al agente')),
     h('nav.jumps', { 'aria-label': 'Secciones de pendientes' },
       jump('pd-tareas', 'Tareas'), jump('pd-compromisos', 'Compromisos'), jump('pd-fechas', 'Fechas'),
-      jump('pd-paginas', 'En tus páginas'), jump('pd-mapa', 'Mapa de misiones')),
+      jump('pd-paginas', 'En tus páginas')),
     h('div.stack',
       tasksCard(t),
       commitmentsCard(commitments),
       deadlinesCard(deadlines),
       pagesCard(data.sections || []),
-      mapaCard(data.mapa),
       h('p.footnote', 'No ves «bucles abiertos» porque GBrain no tiene fuentes de Google conectadas: la tabla está vacía. Aparecerán aquí cuando haya alguno.')));
 }
 
@@ -537,19 +535,3 @@ function pagesCard(sections) {
         : h('p.muted.small', 'El encabezado está, pero sin viñetas debajo.'))))));
 }
 
-/* ----------------------------------------------------------------- mapa */
-
-function mapaCard(m) {
-  if (!m) return null;
-  // El mapa vive ahora en la pestaña Misiones (copia local del artifact de claude.ai).
-  const link = h('a.btn', { href: '#/misiones/mapa' }, 'Abrir el mapa', icon('arrow'));
-  if (m.mode === 'snapshot' && (m.open || []).length) {
-    return card({ title: 'Mapa de misiones', id: 'pd-mapa', actions: link,
-      note: `Snapshot del ${fmtDay(m.snapshotAt)}; solo lectura. Lo actualiza una sesión de Claude cuando se lo pides.` },
-    h('ul.rows', m.open.map((x) => h('li.row',
-      h('div.row-main', h('p.row-text', x.title),
-        h('div.row-meta', x.day && dueChip(x.day, { prefix: 'para' }), x.frente && chip('#' + x.frente, 'tag')))))));
-  }
-  return card({ title: 'Mapa de misiones', id: 'pd-mapa', actions: link },
-    h('p.card-text', 'Tus misiones están en la pestaña Misiones, junto a la Cola de borradores y el Diario. Es una copia local del artifact de claude.ai: lo que marques se guarda en tu Mac.'));
-}

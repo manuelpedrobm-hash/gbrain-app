@@ -28,7 +28,6 @@ export interface PanelConfig {
   };
   telegram: { projectDir: string; launchdLabel: string; botPidFile: string };
   logs: { backup: string; daily: string };
-  mapaUrl: string;
   prices: Record<"opus" | "sonnet" | "haiku", PriceRow>;
 }
 
@@ -55,7 +54,6 @@ export const paths = {
   spend: join(STATE_DIR, "spend.jsonl"),
   audit: join(STATE_DIR, "audit.jsonl"),
   telegramIndex: join(STATE_DIR, "telegram-index.json"),
-  mapaSnapshot: join(STATE_DIR, "mapa-snapshot.json"),
 };
 
 /** Creates ~/.gbrain-panel (0700) and its chats/ folder. Safe to call often. */

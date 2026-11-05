@@ -1,10 +1,10 @@
 # GBrain-app: memoria personal + panel «Cerebro» (plantilla vacía)
 
-Esta es la estructura completa de la app **sin ningún dato personal**: ni misiones, ni notas, ni correos, ni conversaciones, ni hechos. Todo lo que verás en la app lo generas tú con tus propios datos (por ejemplo, con el export de claude.ai).
+Esta es la estructura completa de la app **sin ningún dato personal**: ni notas, ni correos, ni conversaciones, ni hechos. Todo lo que verás en la app lo generas tú con tus propios datos (por ejemplo, con el export de claude.ai).
 
 Qué incluye:
 
-- **Panel «Cerebro»** (`panel/`): una web local en `http://127.0.0.1:3140` (Hoy, Pendientes, Misiones, Mensajes, Memoria, Chat, Estrategia, Asistente, Informes, Reuniones, Estado). Solo escucha en tu Mac.
+- **Panel «Cerebro»** (`panel/`): una web local en `http://127.0.0.1:3140` (Hoy, Pendientes, Diario, Mensajes, Memoria, Chat, Estrategia, Asistente, Informes, Reuniones, Estado). Solo escucha en tu Mac.
 - **Scripts** (`ops/`): importar el export de claude.ai, copias de seguridad, tarea diaria, correo, audio, recordatorios, etc.
 - **Agentes** (`agente-telegram/`, `agente-hermes/`): instrucciones para un agente de Telegram y para «Hermes» (empuja en todos tus frentes).
 - **Cerebro vacío** (`brain-plantilla/`): carpetas y plantillas con las que `setup.sh` crea tu `brain/`.
@@ -17,10 +17,10 @@ Son del servidor de pruebas del panel (`panel/test/mock-server.ts`), con datos *
 
 | | |
 |---|---|
-| ![Hoy](docs/capturas/01-hoy.png) **Hoy**: fechas, tareas y mensajes | ![Inicio vacío](docs/capturas/07-inicio-vacio.png) **Así empieza** tu copia, antes de importar nada |
-| ![Pendientes](docs/capturas/02-pendientes.png) **Pendientes** | ![Memoria](docs/capturas/03-memoria.png) **Memoria** |
-| ![Chat](docs/capturas/04-chat.png) **Chat** con tu cerebro | ![Estrategia](docs/capturas/05-estrategia.png) **Estrategia** |
-| ![Estado](docs/capturas/06-estado.png) **Estado** del sistema | |
+| ![Hoy](docs/capturas/01-hoy.png) **Hoy**: fechas, tareas y mensajes | ![Inicio vacío](docs/capturas/08-inicio-vacio.png) **Así empieza** tu copia, antes de importar nada |
+| ![Pendientes](docs/capturas/02-pendientes.png) **Pendientes** | ![Diario](docs/capturas/03-diario.png) **Diario** |
+| ![Memoria](docs/capturas/04-memoria.png) **Memoria** | ![Chat](docs/capturas/05-chat.png) **Chat** con tu cerebro |
+| ![Estrategia](docs/capturas/06-estrategia.png) **Estrategia** | ![Estado](docs/capturas/07-estado.png) **Estado** del sistema |
 
 ## 1. Requisitos
 
@@ -143,14 +143,13 @@ GBRAIN/
 │   └── dream-cycle-summaries/
 ├── panel/                 panel «Cerebro» (Bun + web)
 │   ├── server.ts, check.ts, config.json, README.md, SPEC.md, Abrir panel.command
-│   ├── lib/               ajustes, artdb, asistente, auth, chat, config, correo, db, diario,
-│   │                      estado, estrategia, gbrain, health, pending, pulse, render, sample,
+│   ├── lib/               ajustes, asistente, auth, chat, config, correo, db, diario,
+│   │                      estado, estrategia, gbrain, health, pending, pulse, render,
 │   │                      tasks, telegram
 │   ├── public/            index.html, app.js, app.css
-│   │   ├── views/         hoy, pendientes, misiones, mensajes, memoria, chat, estrategia,
+│   │   ├── views/         hoy, pendientes, diario, mensajes, memoria, chat, estrategia,
 │   │   │                  asistente, informes, reuniones, estado, hechos, pagina
-│   │   ├── components/    chips, confirm, minigraph, palette, toast, toolchip, visibles
-│   │   └── artifacts/     cola.html, mapa.html (misiones genéricas, vacías), claude-shim.js
+│   │   └── components/    chips, confirm, minigraph, palette, toast, toolchip, visibles
 │   ├── agente-chat/       instrucciones y MCP del chat (solo lectura)
 │   ├── agente-asistente/  asistente de formularios (hooks y ajustes)
 │   ├── app-mac/           app nativa de Mac (Cerebro.swift, build.sh)
@@ -179,12 +178,15 @@ GBRAIN/
 |---|---|
 | Contenido en Markdown | `~/GBRAIN/brain/` (repo git propio) |
 | Hechos y búsqueda | Postgres local, base `gbrain` |
-| Estado del panel, sesiones, misiones y borradores | `~/.gbrain-panel/` |
+| Estado del panel, sesiones y gasto del chat | `~/.gbrain-panel/` |
 | Copias de seguridad y registros | `~/Backups/gbrain/` |
 | Ajustes de coach y recordatorios | `~/.gbrain-coach/` |
 
-Las pestañas **Misiones** (cola de borradores y mapa) empiezan vacías: guardan en `~/.gbrain-panel/artdb/`.
 
-## 8. Estado de las pruebas
+## 8. Pruebas
 
-`cd panel && bun test`: 190 pasan y 3 fallan (en `chat.test.ts`, el tope diario de gasto y el runner con `claude` falso). Esos 3 fallaban ya en el original antes de limpiarlo; no se han investigado.
+```bash
+cd ~/GBRAIN/panel && bun test
+```
+
+184 pruebas, todas en verde tras ejecutar `setup.sh`. Usan datos inventados y una carpeta temporal: no leen tus ajustes reales.

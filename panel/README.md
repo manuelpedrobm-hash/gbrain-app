@@ -1,6 +1,6 @@
 # Cerebro: el panel local de GBrain
 
-Una página en `http://127.0.0.1:3140` con ocho pestañas (Hoy · Pendientes · Misiones · Mensajes · Memoria · Chat · Estrategia · Asistente), una franja de salud arriba y búsqueda con ⌘K. Funciona solo en este Mac: nada escucha fuera de `127.0.0.1`.
+Una página en `http://127.0.0.1:3140` con ocho pestañas (Hoy · Pendientes · Diario · Mensajes · Memoria · Chat · Estrategia · Asistente), una franja de salud arriba y búsqueda con ⌘K. Funciona solo en este Mac: nada escucha fuera de `127.0.0.1`.
 
 ## Abrir el panel
 
@@ -59,15 +59,11 @@ Ejecuta `check.ts` después de cada actualización de gbrain o de claude. Cada l
 - **Nunca:** edita otras páginas, borra nada, toca la configuración de gbrain o de Claude, ni responde por Telegram.
 - **Nunca arregla solo** los problemas de la pestaña Estado: los explica y dice cómo arreglarlos.
 
-## Misiones
+## Diario
 
-Tres subpestañas: **Cola de borradores**, **Mapa de misiones** y **Diario**.
+Un cuaderno de apuntes por días. Lee los archivos `AAAA-MM-DD.md` de la carpeta `~/Documents/DIARIO` (o, si el panel no puede leerla, la copia del cerebro en `sources/informes-claude/DIARIO`), del más reciente al más antiguo. «Apuntar» **añade** una línea con la hora al diario de hoy, bajo «## Apuntes desde el panel»; nunca reescribe lo que hay. Si macOS no deja al panel escribir en esa carpeta, lo dice y explica cómo darle permiso.
 
-- **Cola y Mapa** son los artifacts de claude.ai, traídos tal cual el 26 oct 2026: el HTML está sin tocar en `public/artifacts/cola.html` y `mapa.html`, y se ven en un iframe del propio panel (mismo origen, misma sesión). El servidor les añade un solo script, `public/artifacts/claude-shim.js`, que hace de `window.claude`: su base de datos (`db`) va a `/api/artdb/<página>` y se guarda en `~/.gbrain-panel/artdb/<página>.json` (0600). Los cambios de otras pestañas llegan cada 3 s.
-- **Ya no se sincronizan con claude.ai.** Lo que marques aquí no aparece en el artifact y al revés. La exportación original (103 borradores, 117 misiones, 19 preguntas) está en `~/.gbrain-panel/artdb-export/`.
-- **«Pedir un cambio a Claude»** (Cola) lanza un `claude -p` con Sonnet, sin herramientas ni MCP, con un tope de 0,20 US$ por propuesta que cuenta en el límite diario del chat. No guarda nada hasta que pulsas «Usar esta versión».
-- **Diario**: los archivos `AAAA-MM-DD.md` de `~/Desktop/Papers/informes_claude/DIARIO` (o, si el panel no puede leerla, la copia del cerebro en `sources/informes-claude/DIARIO`), del más reciente al más antiguo. «Apuntar» **añade** una línea con la hora al diario de hoy, bajo «## Apuntes desde el panel»; nunca reescribe lo que hay. Si macOS no deja al panel escribir en el Escritorio, lo dice y explica cómo darle permiso.
-- **Al marcar** un borrador como Enviado/Hecho, o una misión como hecha, el panel apunta una línea en el diario de hoy. Si luego lo desmarcas, la línea se queda (bórrala a mano si quieres).
+Las tareas, los compromisos y las fechas viven en **Pendientes** y **Hoy** (página `ops/tasks`, hechos de tipo compromiso y tabla de fechas): el Diario es solo para anotar lo que pasa.
 
 ## Estrategia
 
@@ -102,7 +98,6 @@ Ajustes privados en `~/.gbrain-panel/asistente.json` (la API nunca los toca): `n
 | Conversaciones del chat | `~/.gbrain-panel/chats/` |
 | Gasto del chat | `~/.gbrain-panel/spend.jsonl` |
 | Escrituras hechas desde el panel | `~/.gbrain-panel/audit.jsonl` |
-| Datos de la Cola y del Mapa (Misiones) | `~/.gbrain-panel/artdb/` (y la exportación de claude.ai en `artdb-export/`) |
 
 ## Problemas frecuentes
 
@@ -120,7 +115,6 @@ Ajustes privados en `~/.gbrain-panel/asistente.json` (la API nunca los toca): `n
 - Inicio de sesión con un código de un solo uso que caduca en 60 s; el secreto viaja por stdin (`curl -H @-`), así que no aparece en `ps`.
 - Cada inicio de sesión crea una cookie aleatoria nueva (30 días). El navegador también la envía a otros servicios de `127.0.0.1` (las cookies no distinguen puertos); por eso dura poco y «Cerrar sesión» la anula en el servidor.
 - Toda petición que cambia algo necesita la cookie, `Origin: http://127.0.0.1:3140`, la cabecera `X-Panel: 1`, JSON y menos de 64 KB.
-- Las páginas de Misiones solo se pueden mostrar dentro del propio panel (`frame-ancestors 'self'`); su script se autoriza por hash, y sus escrituras pasan por las mismas reglas (cookie, Origin, `X-Panel: 1`, JSON). Solo aceptan las colecciones que usa cada página.
 - El HTML de las páginas del cerebro se genera en el servidor: el HTML crudo se muestra como texto y solo sobreviven enlaces `http(s)`, `mailto` y los internos.
 - La política de contenido (CSP) no permite scripts ni estilos de fuera ni en línea.
 - La conexión a Postgres es de solo lectura por defecto, pero el usuario `__USER__` es superusuario: todas las consultas usan parámetros (nunca SQL montado con texto; hay una prueba que lo vigila). Cerrarlo del todo pide un rol solo-SELECT en la base, y eso es decisión tuya.

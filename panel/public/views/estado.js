@@ -182,7 +182,7 @@ function panelCard() {
 
 /* ------------------------------------------------------------- ajustes */
 // Facturación (créditos de la API o plan de claude.ai), modelo por defecto del chat y topes.
-// La facturación vale para el chat, «Pedir un cambio» de la Cola y Claude Code en la terminal.
+// La facturación vale para el chat y para Claude Code en la terminal.
 
 function ajustesCard(a) {
   if (!a) return card({ title: 'Ajustes' }, emptyState('No pude leer los ajustes', 'Recarga la página.'));
@@ -229,5 +229,5 @@ function ajustesCard(a) {
       money('presupuestoDiario', 'Tope diario', 100)),
     !a.claveEnLlavero && h('p.small.warn', 'No hay clave de API en el Llavero: solo puedes usar el plan.'),
     a.planB && h('p.small.warn', `La clave de API falló: hasta las ${new Date(a.planB).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} se usa tu plan. Pulsa «Créditos API» para reintentar.`),
-    h('p.muted.small', 'La facturación vale para el chat, «Pedir un cambio» de la Cola y Claude Code en la terminal (al abrir una sesión nueva). Con créditos, los US$ del panel son gasto real.'));
+    h('p.muted.small', 'La facturación vale para el chat y para Claude Code en la terminal (al abrir una sesión nueva). Con créditos, los US$ del panel son gasto real.'));
 }

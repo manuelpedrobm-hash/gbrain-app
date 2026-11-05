@@ -1,7 +1,7 @@
-// lib/diario.ts — "Diario de __ORG__" in the Misiones tab.
+// lib/diario.ts — "Diario de __ORG__" tab.
 //
 // The diary is one Markdown file per day, YYYY-MM-DD.md, in
-// ~/Desktop/Papers/informes_claude/DIARIO (the original). The brain keeps a
+// ~/Documents/DIARIO (the original). The brain keeps a
 // copy in sources/informes-claude/DIARIO, refreshed every night.
 //
 // Reading: every YYYY-MM-DD*.md of both folders, newest first; when the panel

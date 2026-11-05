@@ -365,7 +365,7 @@ function appendSpend(entry: { ts: string; conversationId: string; runId: string;
   } catch { /* never break a run over bookkeeping */ }
 }
 
-/** Spend of other panel features that run claude -p (the Cola's «Pedir un cambio»): counts toward the daily cap. */
+/** Spend of other panel features that run claude -p: counts toward the daily cap. */
 export function recordPanelSpend(kind: string, model: string, costUsd: number, estimated = false): void {
   appendSpend({ ts: nowIso(), conversationId: kind, runId: crypto.randomUUID(), model, costUsd: round6(costUsd), ...(estimated ? { estimated: true } : {}) });
 }
