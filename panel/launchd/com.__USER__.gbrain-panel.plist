@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Plantilla. La copia instalada vive en ~/Library/LaunchAgents (modo 644, sin secretos).
+     Instalar:  cp launchd/com.__USER__.gbrain-panel.plist ~/Library/LaunchAgents/
+                launchctl bootstrap gui/__UID__ ~/Library/LaunchAgents/com.__USER__.gbrain-panel.plist
+     Reiniciar: launchctl kickstart -k gui/__UID__/com.__USER__.gbrain-panel -->
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.__USER__.gbrain-panel</string>
+  <key>ProgramArguments</key><array>
+    <string>/opt/homebrew/bin/bun</string><string>run</string><string>__REPO__/panel/server.ts</string></array>
+  <key>WorkingDirectory</key><string>__REPO__/panel</string>
+  <key>EnvironmentVariables</key><dict>
+    <key>PATH</key><string>/opt/homebrew/bin:__HOME__/.bun/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>LANG</key><string>es_ES.UTF-8</string>
+    <key>HOME</key><string>__HOME__</string></dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>10</integer>
+  <key>StandardOutPath</key><string>__HOME__/Library/Logs/gbrain-panel.log</string>
+  <key>StandardErrorPath</key><string>__HOME__/Library/Logs/gbrain-panel.log</string>
+</dict></plist>

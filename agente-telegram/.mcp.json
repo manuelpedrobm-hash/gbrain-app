@@ -1,0 +1,1 @@
+{"mcpServers": {"correo": {"type": "stdio", "command": "/usr/bin/python3", "args": ["-I", "__REPO__/ops/correo-mcp.py"], "env": {"HOME": "__HOME__", "PATH": "/usr/bin:/bin:/usr/sbin:/sbin", "LANG": "es_ES.UTF-8"}}}}

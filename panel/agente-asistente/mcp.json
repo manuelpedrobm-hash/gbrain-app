@@ -1,0 +1,1 @@
+{"mcpServers": {"cerebro": {"type": "stdio", "command": "__HOME__/.bun/bin/gbrain", "args": ["serve", "--surface", "starter"], "env": {"HOME": "__HOME__", "PATH": "/opt/homebrew/bin:__HOME__/.bun/bin:/usr/bin:/bin", "GBRAIN_SURFACE": "starter"}}}}

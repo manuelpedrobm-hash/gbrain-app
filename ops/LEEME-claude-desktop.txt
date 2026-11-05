@@ -1,0 +1,31 @@
+GBRAIN EN LA PESTANA CHAT DE CLAUDE DESKTOP
+===========================================
+
+Que se hizo
+- Se anadio GBrain como herramienta de Claude Desktop (archivo
+  ~/Library/Application Support/Claude/claude_desktop_config.json).
+- Usa el script __REPO__/ops/gbrain-mcp-stdio.sh, que no
+  necesita ningun token y no choca con el servidor compartido (puerto 3131).
+- Copia de seguridad del archivo original:
+  ~/Backups/gbrain/claude_desktop_config.json.bak-20261103-4
+
+Paso 1. Reiniciar la app
+- Cierra Claude Desktop del todo (menu Claude > Salir, o Cmd+Q) y vuelve a abrirla.
+  (Cerrar solo la ventana no basta.)
+
+Paso 2. Pegar esto en Preferencias
+- En claude.ai (o la app): Ajustes > Perfil > "Preferencias personales" (instrucciones
+  que Claude sigue en todos los chats). Pega exactamente este texto:
+
+  Si tienes GBrain, consultalo antes de responder sobre mis proyectos, personas o decisiones, y al final de cada chat importante guarda un resumen con remember (provenance: claude chat, fecha).
+
+Paso 3. Comprobar que funciona
+- Abre un chat nuevo. Pulsa el icono de herramientas / "Buscar y herramientas"
+  (debajo de la caja de texto). Debe aparecer "gbrain" con su interruptor activado.
+- Prueba escribiendo: "Usa GBrain para decirme que sabes de mis proyectos."
+  Claude debe pedir permiso para usar la herramienta; acepta (mejor "Permitir siempre").
+- Si no aparece: Ajustes > Desarrollador debe listar "gbrain" como "running".
+  Si dice "failed", abre el registro (boton "Abrir registros") y avisa a Claude Code.
+
+Para deshacerlo
+- Copia la copia de seguridad de vuelta sobre claude_desktop_config.json y reinicia la app.

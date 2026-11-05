@@ -1,0 +1,25 @@
+EXPORT MENSUAL DE CLAUDE.AI AL CEREBRO
+
+Cuando pedirlo (una vez al mes)
+1. En claude.ai: Ajustes, Privacidad, Exportar datos.
+2. Te llega un enlace por correo (caduca en 24 horas). Descarga el zip.
+3. Deja el zip en Descargas (sin meterlo en carpetas). Su nombre empieza por
+   data-, conversations- o memories-.
+
+Que pasa al llegar
+- El sistema vigila Descargas. Si ve un zip nuevo de este tipo, lo abre en una
+  carpeta de trabajo aparte (~/.gbrain-ingest/export-work), lee solo las
+  conversaciones y las importa al cerebro. Lo ya importado se salta solo.
+- No toca ni mueve ni borra tu zip. Tampoco importa el historial de inicios de
+  sesion ni datos de cuenta.
+- Las memorias del export se guardan en la carpeta de trabajo, pero no se importan.
+
+Como comprobarlo
+- Registro: ~/Backups/gbrain/export.log (solo fechas y nombres, sin contenido).
+  Una linea "run ... rc=0" significa que fue bien.
+- Prueba sin importar nada: zsh ~/GBRAIN/ops/export-claude-detectar.sh --dry-run
+- Zips ya procesados: ~/.gbrain-ingest/export-visto.json
+
+Nota: el vigilante automatico (com.__USER__.export-claude) se activa
+cuando el planificador lo cargue; hasta entonces puedes lanzarlo a mano con
+--run.

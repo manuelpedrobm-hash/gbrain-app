@@ -1,0 +1,16 @@
+# El cerebro (tus datos) es su propio repo git: NUNCA se sube aquí
+brain/
+# Secretos y datos locales
+.gbrain-owner*.json
+*.env
+.env.*
+*.pem
+*.key
+# Estado local del panel y mapas
+.gbrain-panel/
+# Basura de sistema y compilados
+.DS_Store
+ops/bin/
+panel/app-mac/*.app
+*.log
+node_modules/

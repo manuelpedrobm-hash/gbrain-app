@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.__USER__.export-claude</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/zsh</string>
+		<string>-c</string>
+		<string>__REPO__/ops/export-claude-detectar.sh --hay-nuevo &amp;&amp; __REPO__/ops/export-claude-detectar.sh --run</string>
+	</array>
+	<key>StandardErrorPath</key>
+	<string>__HOME__/Backups/gbrain/export.err</string>
+	<key>ThrottleInterval</key>
+	<integer>300</integer>
+	<key>WatchPaths</key>
+	<array>
+		<string>__HOME__/Downloads</string>
+	</array>
+</dict>
+</plist>

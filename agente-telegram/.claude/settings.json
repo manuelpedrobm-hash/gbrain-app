@@ -1,0 +1,53 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_telegram_telegram__reply",
+      "mcp__plugin_telegram_telegram__react",
+      "mcp__plugin_telegram_telegram__edit_message",
+      "mcp__plugin_telegram_telegram__download_attachment",
+      "Read",
+      "Glob",
+      "Grep",
+      "WebSearch",
+      "mcp__correo__buscar_correo",
+      "mcp__correo__leer_correo",
+      "mcp__correo__agenda",
+      "Bash(python3 -I __REPO__/ops/recordatorios.py:*)",
+      "Bash(__REPO__/ops/voz-a-texto.sh:*)",
+      "Bash(/usr/bin/python3 -I __REPO__/ops/radar-web.py:*)",
+      "Bash(/usr/bin/python3 -I __REPO__/ops/literatura.py:*)",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "mcp__claude-in-chrome__tabs_create_mcp",
+      "mcp__claude-in-chrome__navigate",
+      "mcp__claude-in-chrome__read_page",
+      "mcp__claude-in-chrome__get_page_text",
+      "mcp__claude-in-chrome__find",
+      "mcp__claude-in-chrome__computer",
+      "mcp__claude-in-chrome__form_input"
+    ],
+    "deny": [
+      "mcp__claude-in-chrome__javascript_tool",
+      "mcp__claude-in-chrome__file_upload",
+      "mcp__claude-in-chrome__upload_image"
+    ]
+  },
+  "enabledPlugins": {
+    "telegram@claude-plugins-official": true
+  },
+  "enabledMcpjsonServers": [
+    "correo"
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__claude-in-chrome__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 -I __REPO__/ops/chrome-dominios.py"
+          }
+        ]
+      }
+    ]
+  }
+}
