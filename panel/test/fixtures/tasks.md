@@ -5,7 +5,7 @@ title: Tareas
 # Tasks
 
 ## P0 — Urgent
-- [ ] <!-- id: t-20261020-01 --> Enviar presupuesto a la fundación #bwf (due: 2026-10-24)
+- [ ] <!-- id: t-20261020-01 --> Enviar presupuesto a la fundación #etiqueta2 (due: 2026-10-24)
 
 ## P1 — Today
 - [ ] <!-- id: t-20261025-01 --> Llamar a la persona A #equipo (due: 2026-10-27)

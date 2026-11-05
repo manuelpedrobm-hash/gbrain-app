@@ -168,11 +168,11 @@ describe("edit builders", () => {
   });
 
   test("edit: replaces exactly one line and keeps metadata", () => {
-    const b = buildEdit(p, "t-20261020-01", "Enviar presupuesto final #bwf");
+    const b = buildEdit(p, "t-20261020-01", "Enviar presupuesto final #etiqueta2");
     const after = applyEdits(FIXTURE, b.edits);
     expect(lineDiff(FIXTURE, after)).toEqual({
-      removed: ["- [ ] <!-- id: t-20261020-01 --> Enviar presupuesto a la fundación #bwf (due: 2026-10-24)"],
-      added: ["- [ ] <!-- id: t-20261020-01 --> Enviar presupuesto final #bwf (due: 2026-10-24)"],
+      removed: ["- [ ] <!-- id: t-20261020-01 --> Enviar presupuesto a la fundación #etiqueta2 (due: 2026-10-24)"],
+      added: ["- [ ] <!-- id: t-20261020-01 --> Enviar presupuesto final #etiqueta2 (due: 2026-10-24)"],
     });
   });
 
