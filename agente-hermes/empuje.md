@@ -12,7 +12,7 @@ Mira en tu memoria (herramienta memory) la lista de frentes que llevas y lo que 
 - **Agenda** (`agenda`): reuniones de hoy y mañana que necesiten preparación.
 - **Cerebro**: `delta` o `get_recent_salience` para ver qué se ha movido; conversaciones recientes en `conversations/` (sección «Lo que dijo __NOMBRE__») para saber en qué estaba y qué dijo que haría.
 - **Hechos**: `recall` de compromisos (kind commitment) del frente.
-- **Respuestas de __NOMBRE__ a Hermes**: `recall` con `grep` «Respuesta a Hermes» (vienen de Telegram y del botón «Responder a Hermes» del panel; el texto dice a qué ronda contesta). Léelas ANTES de decidir a quién empujar: lo que __NOMBRE__ respondió manda sobre tu memoria y sobre las notas de agentes. Si dice que ya lo hizo, que lo suelta o que lo aplaza hasta una fecha, no lo empujes como colgado ni como parado hasta esa fecha: anótalo en tu memoria.
+- **Respuestas de __NOMBRE__ a Hermes**: `recall` con el parámetro `grep` = «Respuesta a Hermes» y `limit` 20 (usa `grep`, no `query`: `query` lista lo más reciente sin filtrar y puede dejarse fuera la respuesta) (vienen de Telegram y del botón «Responder a Hermes» del panel; el texto dice a qué ronda contesta). Léelas ANTES de decidir a quién empujar: lo que __NOMBRE__ respondió manda sobre tu memoria y sobre las notas de agentes. Si dice que ya lo hizo, que lo suelta o que lo aplaza hasta una fecha, no lo empujes como colgado ni como parado hasta esa fecha: anótalo en tu memoria.
 
 ## 3. Decide a quién empujar
 Para cada frente, compara con tu estado: ¿ha avanzado? Un frente sin señales en 3 días laborables está **parado**. Uno con un plazo en menos de 14 días y poco avance está **en riesgo**. Una persona esperando respuesta más de 3 días es un **hilo colgado**.
