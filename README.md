@@ -11,6 +11,17 @@ Qué incluye:
 
 > Está pensado para macOS (usa launchd, Llavero, Swift).
 
+## Capturas
+
+Son del servidor de pruebas del panel (`panel/test/mock-server.ts`), con datos **inventados**; tu copia empezará vacía.
+
+| | |
+|---|---|
+| ![Hoy](docs/capturas/01-hoy.png) **Hoy**: fechas, tareas y mensajes | ![Inicio vacío](docs/capturas/07-inicio-vacio.png) **Así empieza** tu copia, antes de importar nada |
+| ![Pendientes](docs/capturas/02-pendientes.png) **Pendientes** | ![Memoria](docs/capturas/03-memoria.png) **Memoria** |
+| ![Chat](docs/capturas/04-chat.png) **Chat** con tu cerebro | ![Estrategia](docs/capturas/05-estrategia.png) **Estrategia** |
+| ![Estado](docs/capturas/06-estado.png) **Estado** del sistema | |
+
 ## 1. Requisitos
 
 | Requisito | Para qué | Obligatorio |
