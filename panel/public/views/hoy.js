@@ -1,11 +1,12 @@
 // Hoy: la pantalla de cada mañana.
-//   Izquierda: Vence pronto (+ Atrasado) · Tareas de hoy.
+//   Izquierda: Hermes (último empuje) · Vence pronto (+ Atrasado) · Tareas de hoy.
 //   Derecha:   Llegó por Telegram · Nuevo desde tu última visita · Apunta algo.
 
 import {
   h, get, post, card, emptyState, icon, rel, plural, slugLink, inlineText, askChat,
-  capture, refreshView, plainMd,
+  capture, refreshView, plainMd, fmtDay,
 } from '../app.js';
+import { openReplyHermes } from '../components/hermes-reply.js';
 import { typeChip, kindChip } from '../components/chips.js';
 import { formDialog } from '../components/confirm.js';
 import { toast } from '../components/toast.js';
@@ -57,7 +58,7 @@ function draw(el) {
         h('button.btn.small', { type: 'button', onclick: () => askChat('Resúmeme el día', { send: true }) }, icon('chat'), 'Resúmeme el día'),
         h('button.btn.small', { type: 'button', onclick: () => askChat('¿Qué se me está escapando?', { send: true }) }, icon('chat'), '¿Qué se me está escapando?'))),
     h('div.hoy-grid',
-      h('div.col', deadlinesCard(), tasksCard()),
+      h('div.col', hermesCard(), deadlinesCard(), tasksCard()),
       h('div.col', telegramCard(), sinceCard(), noteCard())));
 }
 
@@ -72,6 +73,21 @@ function summaryLine() {
   if (today) parts.push(plural(today, 'tarea para hoy', 'tareas para hoy'));
   if (waiting) parts.push(plural(waiting, 'mensaje sin respuesta', 'mensajes sin respuesta'));
   return h('p.summary', parts.length ? parts.join(' · ') : 'Nada urgente a la vista.');
+}
+
+/* -------------------------------------------------------------- hermes */
+
+function hermesCard() {
+  const hm = data.hermes;
+  if (!hm) return null;
+  const parts = [];
+  if (hm.hilos) parts.push(plural(hm.hilos, 'hilo colgado', 'hilos colgados'));
+  if (hm.parados) parts.push(plural(hm.parados, 'frente parado', 'frentes parados'));
+  return card({ title: 'Hermes', cls: 'hermes-card',
+    note: `Última ronda: ${fmtDay(hm.date, true)} · ${hm.time}${parts.length ? ' · ' + parts.join(' · ') : ''}`,
+    actions: h('a.btn.ghost.small', { href: '#/hermes' }, 'Leer el mensaje') },
+  hm.urgent && h('p.card-text', h('strong', 'Lo más urgente: '), hm.urgent),
+  h('div.card-actions-row', h('button.btn.small', { type: 'button', onclick: () => openReplyHermes(hm) }, 'Responder a Hermes')));
 }
 
 /* ---------------------------------------------------------- vence pronto */

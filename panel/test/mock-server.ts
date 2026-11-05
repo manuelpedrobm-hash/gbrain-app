@@ -261,6 +261,7 @@ function get(path: string, q: URLSearchParams): Response | null {
       inbox: mode === "empty" ? [] : [{ slug: "inbox/2026-10-25-idea", title: "Idea para el piloto", created_at: iso(2 * H) }, { slug: "inbox/2026-10-24-recado", title: "Comprar **cartuchos**", created_at: iso(30 * H) }],
       tasksExists: mode !== "empty",
       estado: { ok: true, slug: "sources/informes-claude/estado", mtime: iso(4 * D), ageDays: 4, stale: true },
+      hermes: mode === "empty" ? null : { id: "2026-11-05 21:01", date: "2026-11-05", time: "21:01", hilos: 2, parados: 1, urgent: "decidir esta noche si el Proyecto Alfa sigue o se aparca. Quedan 12 días para el cierre y nadie ha confirmado todavía. Primer paso de 15 minutos: escribe en una línea «sigue con X» o «aparcado»." },
     });
     case "/api/asistente": return json({
       dominios: { ok: true, permitidos: ["localhost", "127.0.0.1", "financiador.example", "otro-financiador.example"], bloqueados: ["paypal", "gmail"] },

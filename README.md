@@ -121,7 +121,9 @@ Cada mes puedes repetir el export; solo entra lo nuevo.
 - **Tarea diaria** (`ops/gbrain-daily.sh`): ingiere sesiones de Claude Code, hace commit del cerebro, `gbrain sync` y copia de seguridad. Prográmala con un `.plist` de launchd (p. ej. 03:30).
 - **Copia fuera del Mac**: añade un remoto `origin` privado a `brain/` y el script lo subirá. No lo hagas con el repo de la app para tus datos.
 - **Fuentes propias**: copia `ops/fuentes-plantilla.sh` a `ops/fuentes/<nombre>.sh`, cambia `ORIGEN` y `NOMBRE`, y ejecútalo con `--dry-run`, `--stage` y `--publish`. Excluye secretos, duplicados y archivos grandes.
-- **Hermes** (empuja en todos tus frentes): `ops/hermes-empuje.sh` lanza una ronda con el CLI `hermes` (hay que tenerlo instalado y configurado con los MCP `cerebro` y `correo`), la manda por Telegram y la guarda en `brain/ops/hermes/empuje-AAAA-MM.md`. La pestaña **Hermes** del panel lista esos mensajes, el último primero. Las rondas «sin novedad» no se guardan. Prográmala con un `.plist` de launchd (`com.<usuario>.hermes-empuje`).
+- **Hermes** (empuja en todos tus frentes): `ops/hermes-empuje.sh` lanza una ronda con el CLI `hermes` (hay que tenerlo instalado y configurado con los MCP `cerebro` y `correo`), la manda por Telegram y la guarda en `brain/ops/hermes/empuje-AAAA-MM.md`. Prográmala con un `.plist` de launchd (`com.<usuario>.hermes-empuje`; p. ej. entre semana a las 10:45, 16:00 y 21:00). Las rondas «sin novedad» no se guardan.
+  - **Verlo:** la pestaña **Hermes** lista los mensajes (el último primero) y **Hoy** muestra una tarjeta con lo más urgente de la última ronda; se actualiza sola cuando llega una nueva.
+  - **Responderle:** el botón «Responder a Hermes» (en Hoy y en su pestaña) o simplemente contestar por Telegram. En los dos casos se guarda un hecho que empieza por «Respuesta a Hermes (ronda …)». Hermes lo lee con `recall` al empezar su siguiente ronda y deja de empujar lo ya contestado. Para que el agente de Telegram lo haga, reinícialo tras `setup.sh` (lee `agente-telegram/CLAUDE.md` al arrancar).
 - **Telegram**: `zsh ops/set-telegram-token.sh` (pide el token con entrada oculta; nunca lo pegues en un chat) y `ops/telegram-agent.sh`.
 - **Correo**: `ops/correo.py` e `ionos-imap.py` vienen con servidores IMAP/SMTP de IONOS; cambia `IMAP_HOST`/`SMTP_HOST` por los de tu proveedor. La clave se lee del Llavero (servicio `ionos-imap`), nunca va en archivos.
 - **Clave de API** para el selector de facturación: Llavero, servicio `anthropic-api-key`, cuenta = tu usuario de macOS.
@@ -191,4 +193,4 @@ GBRAIN/
 cd ~/GBRAIN/panel && bun test
 ```
 
-189 pruebas, todas en verde tras ejecutar `setup.sh`. Usan datos inventados y una carpeta temporal: no leen tus ajustes reales.
+191 pruebas, todas en verde tras ejecutar `setup.sh`. Usan datos inventados y una carpeta temporal: no leen tus ajustes reales.

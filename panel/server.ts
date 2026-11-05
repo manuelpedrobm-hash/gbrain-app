@@ -27,7 +27,7 @@ import { getMensajes, getTelegramSummary, telegramFingerprint } from "./lib/tele
 import { chatStream, getChat, listChats, panelSpendToday, startChat, stopChat } from "./lib/chat.ts";
 import { CorreoError, saveDraft, sendEmail } from "./lib/correo.ts";
 import { AjustesError, billingStatus, setAjustes } from "./lib/ajustes.ts";
-import { listRounds } from "./lib/hermes.ts";
+import { listRounds, summarize } from "./lib/hermes.ts";
 import { appendEntry, DiarioError, listEntries, NO_PERMISSION_ES } from "./lib/diario.ts";
 import { buildEstrategiaView, ESTRATEGIA_SLUG } from "./lib/estrategia.ts";
 import * as asistente from "./lib/asistente.ts";
@@ -225,6 +225,7 @@ async function viewHoy() {
     since: { lastSeen, ...since },
     inbox: inboxRows,
     estado: estadoMeta(estado),
+    hermes: (() => { const r = listRounds(1).rounds[0]; return r ? summarize(r) : null; })(),
   };
 }
 

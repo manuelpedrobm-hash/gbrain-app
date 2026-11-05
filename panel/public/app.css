@@ -1222,3 +1222,4 @@ dialog.palette:not([open]) { display: none; }
 .hermes-round { margin-bottom: 14px; }
 .hermes-body p { white-space: pre-line; }
 .hermes-round details > summary { cursor: pointer; color: var(--muted, inherit); margin: 4px 0 8px; }
+.hermes-card .card-actions-row { margin-top: 10px; }

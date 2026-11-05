@@ -51,3 +51,22 @@ describe("listRounds", () => {
     expect(listRounds()).toEqual({ rounds: [], total: 0, folder: false });
   });
 });
+
+describe("summary for the Hoy card", () => {
+  const md = "🔱 Hermes · 21:00\n\n👉 Lo más urgente ahora: decidir si sigue [[projects/alfa]].\nPrimer paso: escribe una línea.\n\n⏳ Hilos colgados:\nAna: desde el lunes\nJosé: desde el martes\n\n🧊 Frentes parados:\nBeta: 7 días\n\n✅ Bien: algo.";
+  test("whole urgent paragraph and section counts", async () => {
+    const { summarize, urgentFullOf, countSection } = await import("../lib/hermes.ts");
+    expect(urgentFullOf(md)).toBe("decidir si sigue projects/alfa. Primer paso: escribe una línea.");
+    expect(countSection(md, "Hilos colgados")).toBe(2);
+    expect(countSection(md, "Frentes parados")).toBe(1);
+    expect(countSection(md, "No existe")).toBe(0);
+    const s = summarize({ id: "2026-11-05 21:01", date: "2026-11-05", time: "21:01", markdown: md, urgent: "x" });
+    expect([s.hilos, s.parados]).toEqual([2, 1]);
+  });
+  test("mtime of the monthly pages moves when a round is appended", async () => {
+    const { hermesMtimeMs } = await import("../lib/hermes.ts");
+    expect(hermesMtimeMs()).toBe(0);
+    writeFileSync(join(dir, "empuje-2026-11.md"), MES);
+    expect(hermesMtimeMs()).toBeGreaterThan(0);
+  });
+});

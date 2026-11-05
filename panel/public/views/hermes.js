@@ -1,7 +1,8 @@
 // Hermes (#/hermes): los mensajes de empuje que Hermes te manda por Telegram, del más reciente
 // al más antiguo. Solo lectura: salen de las páginas ops/hermes/empuje-AAAA-MM del cerebro.
 
-import { h, get, card, raw, emptyState, pageHead, fmtDay, rel } from '../app.js';
+import { h, get, card, raw, emptyState, pageHead, fmtDay } from '../app.js';
+import { openReplyHermes } from '../components/hermes-reply.js';
 
 export const title = 'Hermes';
 
@@ -22,8 +23,9 @@ export async function mount(el) {
   const items = rounds.map((r, i) => {
     const when = `${fmtDay(r.date, true)} · ${r.time}`;
     const body = h('div.prose.hermes-body', raw(r.html));
-    if (i === 0) return card({ title: when, cls: 'hermes-round', note: 'La última ronda' }, body);
-    return card({ title: when, cls: 'hermes-round', note: r.urgent || undefined },
+    const reply = h('button.btn.small', { type: 'button', onclick: () => openReplyHermes(r) }, 'Responder');
+    if (i === 0) return card({ title: when, cls: 'hermes-round', note: 'La última ronda', actions: reply }, body);
+    return card({ title: when, cls: 'hermes-round', note: r.urgent || undefined, actions: reply },
       h('details', h('summary', 'Leer el mensaje'), body));
   });
   el.replaceChildren(head, ...items);
