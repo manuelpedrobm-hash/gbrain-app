@@ -209,6 +209,17 @@ function get(path: string, q: URLSearchParams): Response | null {
       telegramCostToday: { usd: 1.23, requests: 31 }, panelChatToday: { usd: spend, capUsd: 5 }, at: new Date().toISOString(),
     });
     case "/api/ajustes": return json({ facturacion: "plan", modelo: "sonnet", presupuestoConversacion: 2, presupuestoDiario: 5, claveEnLlavero: false, planB: null });
+    case "/api/hermes": return json({
+      folder: true, total: mode === "empty" ? 0 : 3,
+      rounds: mode === "empty" ? [] : [
+        { id: "2026-11-05 21:01", date: "2026-11-05", time: "21:01", urgent: "decidir esta noche si el Proyecto Alfa sigue o se aparca.",
+          html: "<p>🔱 Hermes · 21:00</p><p>👉 Lo más urgente ahora: decidir esta noche si el Proyecto Alfa sigue o se aparca. Quedan 12 días para el cierre y nadie ha confirmado todavía. Primer paso de 15 minutos: escribe en una línea «sigue con X» o «aparcado».</p><p>⏳ Hilos colgados:\nAna García: te escribió el lunes y no le has contestado [correo 2 nov]\nJosé Pérez: espera el documento que le prometiste el 29 oct [correo 29 oct]</p><p>🧊 Frentes parados:\nPresupuesto del Proyecto Beta: 7 días sin avance. Lo desbloquea decidir qué versión es la buena.</p><p>✅ Bien: contestaste a María López y reorganizaste la reunión del jueves.</p>" },
+        { id: "2026-11-05 14:10", date: "2026-11-05", time: "14:10", urgent: "enviar el presupuesto revisado a la fundación.",
+          html: "<p>🔱 Hermes · 14:09</p><p>👉 Lo más urgente ahora: enviar el presupuesto revisado a la fundación. Venció ayer.</p><p>⏳ Hilos colgados:\nAna García: desde el lunes.</p>" },
+        { id: "2026-11-04 09:02", date: "2026-11-04", time: "09:02", urgent: "preparar las diapositivas de la reunión del jueves.",
+          html: "<p>🔱 Hermes · 09:01</p><p>👉 Lo más urgente ahora: preparar las diapositivas de la reunión del jueves.</p>" },
+      ],
+    });
     case "/api/diario": return json({
       entries: mode === "empty" ? [] : [
         { file: "2026-11-05.md", date: "2026-11-05", title: "5 de noviembre de 2026", source: "original", mtime: iso(2 * H),

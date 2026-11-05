@@ -27,6 +27,7 @@ import { getMensajes, getTelegramSummary, telegramFingerprint } from "./lib/tele
 import { chatStream, getChat, listChats, panelSpendToday, startChat, stopChat } from "./lib/chat.ts";
 import { CorreoError, saveDraft, sendEmail } from "./lib/correo.ts";
 import { AjustesError, billingStatus, setAjustes } from "./lib/ajustes.ts";
+import { listRounds } from "./lib/hermes.ts";
 import { appendEntry, DiarioError, listEntries, NO_PERMISSION_ES } from "./lib/diario.ts";
 import { buildEstrategiaView, ESTRATEGIA_SLUG } from "./lib/estrategia.ts";
 import * as asistente from "./lib/asistente.ts";
@@ -444,6 +445,15 @@ async function viewDiario() {
   };
 }
 
+async function viewHermes() {
+  const known = await db.getKnownSlugs().catch(() => new Set<string>());
+  const { rounds, total, folder } = listRounds();
+  return {
+    folder, total,
+    rounds: rounds.map((r) => ({ id: r.id, date: r.date, time: r.time, urgent: r.urgent, html: renderMarkdown(r.markdown, known) })),
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Router
 
@@ -466,6 +476,7 @@ async function route(req: Request, url: URL, server: Server): Promise<Response> 
   if (m === "GET") {
     switch (p) {
       case "/api/diario": return json(await viewDiario());
+      case "/api/hermes": return json(await viewHermes());
       case "/api/pulse": return json(await computePulse(tgFingerprint()));
       case "/api/health": return json(await getHealth({ telegram: tgSummary as any, panelSpend: chatSpend }));
       case "/api/estado": return json(await getEstadoPage());

@@ -4,7 +4,7 @@ Esta es la estructura completa de la app **sin ningún dato personal**: ni notas
 
 Qué incluye:
 
-- **Panel «Cerebro»** (`panel/`): una web local en `http://127.0.0.1:3140` (Hoy, Pendientes, Diario, Mensajes, Memoria, Chat, Estrategia, Asistente, Informes, Reuniones, Estado). Solo escucha en tu Mac.
+- **Panel «Cerebro»** (`panel/`): una web local en `http://127.0.0.1:3140` (Hoy, Pendientes, Diario, Mensajes, Hermes, Memoria, Chat, Estrategia, Asistente, Informes, Reuniones, Estado). Solo escucha en tu Mac.
 - **Scripts** (`ops/`): importar el export de claude.ai, copias de seguridad, tarea diaria, correo, audio, recordatorios, etc.
 - **Agentes** (`agente-telegram/`, `agente-hermes/`): instrucciones para un agente de Telegram y para «Hermes» (empuja en todos tus frentes).
 - **Cerebro vacío** (`brain-plantilla/`): carpetas y plantillas con las que `setup.sh` crea tu `brain/`.
@@ -21,6 +21,7 @@ Son del servidor de pruebas del panel (`panel/test/mock-server.ts`), con datos *
 | ![Pendientes](docs/capturas/02-pendientes.png) **Pendientes** | ![Diario](docs/capturas/03-diario.png) **Diario** |
 | ![Memoria](docs/capturas/04-memoria.png) **Memoria** | ![Chat](docs/capturas/05-chat.png) **Chat** con tu cerebro |
 | ![Estrategia](docs/capturas/06-estrategia.png) **Estrategia** | ![Estado](docs/capturas/07-estado.png) **Estado** del sistema |
+| ![Hermes](docs/capturas/09-hermes.png) **Hermes**: sus mensajes de empuje | |
 
 ## 1. Requisitos
 
@@ -120,6 +121,7 @@ Cada mes puedes repetir el export; solo entra lo nuevo.
 - **Tarea diaria** (`ops/gbrain-daily.sh`): ingiere sesiones de Claude Code, hace commit del cerebro, `gbrain sync` y copia de seguridad. Prográmala con un `.plist` de launchd (p. ej. 03:30).
 - **Copia fuera del Mac**: añade un remoto `origin` privado a `brain/` y el script lo subirá. No lo hagas con el repo de la app para tus datos.
 - **Fuentes propias**: copia `ops/fuentes-plantilla.sh` a `ops/fuentes/<nombre>.sh`, cambia `ORIGEN` y `NOMBRE`, y ejecútalo con `--dry-run`, `--stage` y `--publish`. Excluye secretos, duplicados y archivos grandes.
+- **Hermes** (empuja en todos tus frentes): `ops/hermes-empuje.sh` lanza una ronda con el CLI `hermes` (hay que tenerlo instalado y configurado con los MCP `cerebro` y `correo`), la manda por Telegram y la guarda en `brain/ops/hermes/empuje-AAAA-MM.md`. La pestaña **Hermes** del panel lista esos mensajes, el último primero. Las rondas «sin novedad» no se guardan. Prográmala con un `.plist` de launchd (`com.<usuario>.hermes-empuje`).
 - **Telegram**: `zsh ops/set-telegram-token.sh` (pide el token con entrada oculta; nunca lo pegues en un chat) y `ops/telegram-agent.sh`.
 - **Correo**: `ops/correo.py` e `ionos-imap.py` vienen con servidores IMAP/SMTP de IONOS; cambia `IMAP_HOST`/`SMTP_HOST` por los de tu proveedor. La clave se lee del Llavero (servicio `ionos-imap`), nunca va en archivos.
 - **Clave de API** para el selector de facturación: Llavero, servicio `anthropic-api-key`, cuenta = tu usuario de macOS.
@@ -144,10 +146,10 @@ GBRAIN/
 ├── panel/                 panel «Cerebro» (Bun + web)
 │   ├── server.ts, check.ts, config.json, README.md, SPEC.md, Abrir panel.command
 │   ├── lib/               ajustes, asistente, auth, chat, config, correo, db, diario,
-│   │                      estado, estrategia, gbrain, health, pending, pulse, render,
+│   │                      estado, estrategia, gbrain, health, hermes, pending, pulse, render,
 │   │                      tasks, telegram
 │   ├── public/            index.html, app.js, app.css
-│   │   ├── views/         hoy, pendientes, diario, mensajes, memoria, chat, estrategia,
+│   │   ├── views/         hoy, pendientes, diario, mensajes, hermes, memoria, chat, estrategia,
 │   │   │                  asistente, informes, reuniones, estado, hechos, pagina
 │   │   └── components/    chips, confirm, minigraph, palette, toast, toolchip, visibles
 │   ├── agente-chat/       instrucciones y MCP del chat (solo lectura)
@@ -189,4 +191,4 @@ GBRAIN/
 cd ~/GBRAIN/panel && bun test
 ```
 
-184 pruebas, todas en verde tras ejecutar `setup.sh`. Usan datos inventados y una carpeta temporal: no leen tus ajustes reales.
+189 pruebas, todas en verde tras ejecutar `setup.sh`. Usan datos inventados y una carpeta temporal: no leen tus ajustes reales.
